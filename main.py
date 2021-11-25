@@ -10,7 +10,7 @@ def print_hi(name):
 
 def test(num):
     for i in range(1, 10):
-        print("Hello")
+        print("Hello dickhead")
         print(i)
 
 
