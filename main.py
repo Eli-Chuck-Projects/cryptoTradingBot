@@ -8,9 +8,15 @@ def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
 
+def test(num):
+    for i in range(1, 10):
+        print("Hello")
+        print(i)
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm Sucks Ass alot !!!!!!')
+    print_hi('ajkshdljkadjkfaskenfjkjasef')
+    test(9182490)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
