@@ -45,11 +45,11 @@ cb = CBFunctions(auth_client)
 # Threshold Variables
 isNextOperationBuy = True
 
-UPWARD_TREND_THRESHOLD = 1.0007
-DIP_THRESHOLD = -2.25
+UPWARD_TREND_THRESHOLD = .4
+DIP_THRESHOLD = -.3
 
-PROFIT_THRESHOLD = 1.007
-STOP_LOSS_THRESHOLD = -2.00
+PROFIT_THRESHOLD = .2
+STOP_LOSS_THRESHOLD = -.2
 
 lastOpPrice = cb.getPrice("BTC-USD")
 print("Starting Price: " + str(lastOpPrice))
@@ -60,30 +60,37 @@ sell_amount = 0.1
 def attemptToMakeTrade():
     currentPrice = cb.getPrice("BTC-USD")
     percentageDiff = (currentPrice - lastOpPrice) / lastOpPrice * 100
+    global isNextOperationBuy
+    print(isNextOperationBuy)
     if isNextOperationBuy:
         tryToBuy(percentageDiff)
-    else:
+    elif isNextOperationBuy:
         tryToSell(percentageDiff)
 
 
 def tryToBuy(percentageDiff):
     print("Trying to buy")
     print("percent: " + str(percentageDiff))
+    global UPWARD_TREND_THRESHOLD
+    global  DIP_THRESHOLD
     if percentageDiff >= UPWARD_TREND_THRESHOLD or percentageDiff <= DIP_THRESHOLD:
         print("buying")
         lestOpPrice = cb.getPrice("BTC-USD")
         cb.buy(buy_amount, "market", "BTC-USD")
-        isNextOperationBuy = False
+    isNextOperationBuy = False
 
 
 def tryToSell(percentageDiff):
     print("Trying to sell")
     print("percent: " + str(percentageDiff))
-    if percentageDiff >= PROFIT_THRESHOLD or percentageDiff > STOP_LOSS_THRESHOLD:
+    global PROFIT_THRESHOLD
+    global STOP_LOSS_THRESHOLD
+
+    if percentageDiff >= PROFIT_THRESHOLD or percentageDiff <= STOP_LOSS_THRESHOLD:
         print("selling")
         lastOpPrice = cb.getPrice("BTC-USD")
         cb.sell(sell_amount, "market", "BTC-USD")
-        isNextOperationBuy = True
+    isNextOperationBuy = True
 
 while True:
     attemptToMakeTrade()
