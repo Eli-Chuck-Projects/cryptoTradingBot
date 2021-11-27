@@ -14,7 +14,8 @@ auth_client = cbpro.AuthenticatedClient(public, secret, passphrase)
 
 cb = CBFunctions(auth_client)
 
-
+test = CBFunctions(auth_client)
+test.printPrice("BTC-USD")
 # Trading Bot Example
 
 sell_price = 30000
