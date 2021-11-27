@@ -2,15 +2,16 @@ import cbpro
 import time
 from CBFunctions import CBFunctions
 
-data = open('passphrase', 'r').read().splitlines()
+realAPI = open('realAPI', 'r').read().splitlines()
+sandboxAPI = open('sandBoxAPI', 'r').read().splitlines()
 
-public = data[0]
-passphrase = data[1]
-secret = data[2]
+public = sandboxAPI[0]
+passphrase = sandboxAPI[1]
+secret = sandboxAPI[2]
 
 
 
-auth_client = cbpro.AuthenticatedClient(public, secret, passphrase)
+auth_client = cbpro.AuthenticatedClient(public, secret, passphrase, api_url="https://api-public.sandbox.pro.coinbase.com")
 
 cb = CBFunctions(auth_client)
 
@@ -18,15 +19,16 @@ test = CBFunctions(auth_client)
 test.printPrice("BTC-USD")
 # Trading Bot Example
 
-sell_price = 30000
-sell_amount = 0.3
+sell_price = 53350
+sell_amount = 0.1
 
-buy_price = 25000
-buy_amount = 0.2
+buy_price = 52852
+buy_amount = 0.1
 
 
 while True:
     price = cb.getPrice("BTC-USD")
+    cb.printPrice("BTC-USD")
     if price <= buy_price:
         print("Buying BTC")
         # auth_client.buy(size=buy_amount, order_type="marker", product_id="BTC_USD")
@@ -37,6 +39,6 @@ while True:
         cb.sell(sell_amount, "market", "BTC-USD")
     else:
         print("Nothing")
-    time.sleep(10)
+    time.sleep(20)
 
 
