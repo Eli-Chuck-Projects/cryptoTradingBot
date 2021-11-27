@@ -3,14 +3,14 @@ class CBFunctions:
     def __init__(self, authClient):
         self.authClient = authClient
 
-    def sell(self, size, market, productId):
-        self.authClient.sell(size=self.size, order_type= self.market, product_id = self.productId)
-        print("Sold " + self.productId + " with size of " + self.size + " order type: " + self.market + "at " + self.authClient.get_time())
+    def sell(self, size, market, productID):
+        self.authClient.sell(size=size, order_type= market, product_id = productID)
+        print("Sold " + str(productID) + " with size of " + str(size) + " order type: " + str(market) + "at " + str(self.authClient.get_time()))
 
-    def getPrice(self, productID):
-        self.price = float(self.authClient.get_product_ticker(product_id='productID')['price'])
-        print("ID: "+ self.productID+" PRICE: "+ self.price+" TIME: " + self.authClient.get_time())
+    def price(self, productID):
+        price = float(self.authClient.get_product_ticker(product_id=productID)["price"])
+        return price
 
     def buy(self, size, market, productID):
-        self.authClient.buy(size=self.size, order_type = self.market, product_id= self.productID)
-        print("Bought " + self.productID + " with size of " + self.size + "order type: " + self.market + " at " + self.authClient.get_time())
+        self.authClient.buy(size=size, order_type = market, product_id= productID)
+        print("Bought " + str(productID) + " with size of " + str(size) + "order type: " + str(market) + " at " + str(self.authClient.get_time()))
