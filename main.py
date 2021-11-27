@@ -51,14 +51,14 @@ DIP_THRESHOLD = -.3
 PROFIT_THRESHOLD = 4
 STOP_LOSS_THRESHOLD = -.2
 
-lastOpPrice = cb.getPrice("BTC-USD")
+lastOpPrice = float(auth_client.get_product_ticker(product_id="BTC-USD")["price"])
 print("Starting Price: " + str(lastOpPrice))
 buy_amount = 0.1
 sell_amount = 0.1
 
 
 def attemptToMakeTrade():
-    currentPrice = cb.getPrice("BTC-USD")
+    currentPrice = float(auth_client.get_product_ticker(product_id="BTC-USD")["price"])
     percentageDiff = (currentPrice - lastOpPrice) / lastOpPrice * 100
     global isNextOperationBuy
     print(isNextOperationBuy)
@@ -77,8 +77,8 @@ def tryToBuy(percentageDiff):
     global  DIP_THRESHOLD
     if percentageDiff >= UPWARD_TREND_THRESHOLD or percentageDiff <= DIP_THRESHOLD:
         print("buying")
-        lestOpPrice = cb.getPrice("BTC-USD")
-        cb.buy(buy_amount, "market", "BTC-USD")
+        lestOpPrice = float(auth_client.get_product_ticker(product_id="BTC-USD")["price"])
+        print(auth_client.buy(size=buy_amount,order_type="market", product_id="BTC-USD"))
 
     isNextOperationBuy = False
 
@@ -92,14 +92,16 @@ def tryToSell(percentageDiff):
 
     if percentageDiff >= PROFIT_THRESHOLD:
         print("selling")
-        lastOpPrice = cb.getPrice("BTC-USD")
-        cb.sell(sell_amount, "market", "BTC-USD")
+        lastOpPrice = float(auth_client.get_product_ticker(product_id="BTC-USD")["price"])
+        print(auth_client.sell(size=sell_amount,order_type="market", product_id="BTC-USD"))
 
     isNextOperationBuy = True
 
 while True:
     attemptToMakeTrade()
-    time.sleep(6)
+    time.sleep(20)
+
+
 
 
 
