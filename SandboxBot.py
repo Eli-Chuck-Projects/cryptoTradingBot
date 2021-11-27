@@ -1,3 +1,34 @@
+
+# test = CBFunctions(auth_client)
+# test.printPrice("BTC-USD")
+# # Trading Bot Example
+#
+# sell_price = 53350
+# sell_amount = 0.1
+#
+# buy_price = 52852
+# buy_amount = 0.1
+#
+
+
+
+# while True:
+#     price = cb.getPrice("BTC-USD")
+#     cb.printPrice("BTC-USD")
+#     if price <= buy_price:
+#         print("Buying BTC")
+#         # auth_client.buy(size=buy_amount, order_type="marker", product_id="BTC_USD")
+#         cb.buy(buy_amount, "market", "BTC-USD")
+#     elif price >= sell_price:
+#         print("Selling BTC")
+#         # auth_client.sell(size=sell_amount, order_type="market", product_id="BTC-USD")
+#         cb.sell(sell_amount, "market", "BTC-USD")
+#     else:
+#         print("Nothing")
+#     time.sleep(6)
+#
+#
+
 import cbpro
 import time
 from CBFunctions import CBFunctions
@@ -14,35 +45,60 @@ cb = CBFunctions(auth_client)
 # Threshold Variables
 isNextOperationBuy = True
 
-UPWARD_TREND_THRESHOLD = 1.25
-DIP_THRESHOLD = -2.25
+UPWARD_TREND_THRESHOLD = .25
+DIP_THRESHOLD = -.1
 
-PROFIT_THRESHOLD = 1.25
-STOP_LOSS_THRESHOLD = -2.00
+PROFIT_THRESHOLD = .25
+STOP_LOSS_THRESHOLD = -.15
 
-lastOpPrice = 100.0
+lastOpPrice = float(auth_client.get_product_ticker(product_id="BTC-USD")["price"])
+print("Starting Price: " + str(lastOpPrice))
 buy_amount = 0.1
 sell_amount = 0.1
 
+
 def attemptToMakeTrade():
-    currentPrice = cb.getPrice("BTC-USD")
-    percentageDiff = (currentPrice - lastOpPrice)/lastOpPrice*100
+    currentPrice = float(auth_client.get_product_ticker(product_id="BTC-USD")["price"])
+    percentageDiff = (currentPrice - lastOpPrice) / lastOpPrice
+    global isNextOperationBuy
+    print(isNextOperationBuy)
+
     if isNextOperationBuy:
-        tryToBuy()
+        tryToBuy(percentageDiff)
     else:
-        tryToSell()
+        tryToSell(percentageDiff)
+
+
 
 def tryToBuy(percentageDiff):
+    print("Trying to buy")
+    print("percent: " + str(percentageDiff))
+    global isNextOperationBuy
+    global UPWARD_TREND_THRESHOLD
+    global  DIP_THRESHOLD
     if percentageDiff >= UPWARD_TREND_THRESHOLD or percentageDiff <= DIP_THRESHOLD:
-        lestOpPrice = cb.getPrice("BTC-USD")
-        cb.buy(buy_amount, "market", "BTC-USD")
-        isNextOperationBuy = False
+        print("buying")
+        lestOpPrice = float(auth_client.get_product_ticker(product_id="BTC-USD")["price"])
+        print(auth_client.buy(size=buy_amount,order_type="market", product_id="BTC-USD"))
+
+    isNextOperationBuy = False
+
 
 def tryToSell(percentageDiff):
-    if percentageDiff >= PROFIT_THRESHOLD or percentageDiff > STOP_LOSS_THRESHOLD:
-        lastOpPrice = cb.getPrice("BTC-USD")
-        cb.sell(sell_amount, "market", "BTC-USD")
-        isNextOperationBuy = True
+    print("Trying to sell")
+    print("percent: " + str(percentageDiff))
+    global isNextOperationBuy
+    global PROFIT_THRESHOLD
+    global STOP_LOSS_THRESHOLD
 
+    if percentageDiff >= PROFIT_THRESHOLD:
+        print("selling")
+        lastOpPrice = float(auth_client.get_product_ticker(product_id="BTC-USD")["price"])
+        print(auth_client.sell(size=sell_amount,order_type="market", product_id="BTC-USD"))
 
+    isNextOperationBuy = True
+
+while True:
+    attemptToMakeTrade()
+    time.sleep(20)
 

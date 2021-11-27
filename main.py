@@ -45,11 +45,11 @@ cb = CBFunctions(auth_client)
 # Threshold Variables
 isNextOperationBuy = True
 
-UPWARD_TREND_THRESHOLD = .4
-DIP_THRESHOLD = -.3
+UPWARD_TREND_THRESHOLD = .25
+DIP_THRESHOLD = -.1
 
-PROFIT_THRESHOLD = 4
-STOP_LOSS_THRESHOLD = -.2
+PROFIT_THRESHOLD = .25
+STOP_LOSS_THRESHOLD = -.15
 
 lastOpPrice = float(auth_client.get_product_ticker(product_id="BTC-USD")["price"])
 print("Starting Price: " + str(lastOpPrice))
@@ -59,7 +59,7 @@ sell_amount = 0.1
 
 def attemptToMakeTrade():
     currentPrice = float(auth_client.get_product_ticker(product_id="BTC-USD")["price"])
-    percentageDiff = (currentPrice - lastOpPrice) / lastOpPrice * 100
+    percentageDiff = (currentPrice - lastOpPrice) / lastOpPrice
     global isNextOperationBuy
     print(isNextOperationBuy)
 
@@ -67,6 +67,7 @@ def attemptToMakeTrade():
         tryToBuy(percentageDiff)
     else:
         tryToSell(percentageDiff)
+
 
 
 def tryToBuy(percentageDiff):
@@ -97,9 +98,20 @@ def tryToSell(percentageDiff):
 
     isNextOperationBuy = True
 
+
+def attemptToMakeTrade2(dt):
+    rates = auth_client.get_product_historic_rates("BTC-USD")
+    currentPrice = cb.getPrice("BTC-USD")
+    print(rates)
+    print(currentPrice)
+    print("")
+
+
+
 while True:
-    attemptToMakeTrade()
-    time.sleep(20)
+    deltaT = 5
+    attemptToMakeTrade2(deltaT)
+    time.sleep(deltaT)
 
 
 
