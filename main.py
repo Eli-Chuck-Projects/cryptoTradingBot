@@ -26,6 +26,8 @@ buy_price = 52852
 buy_amount = 0.1
 
 
+
+
 while True:
     price = cb.getPrice("BTC-USD")
     cb.printPrice("BTC-USD")
@@ -39,6 +41,6 @@ while True:
         cb.sell(sell_amount, "market", "BTC-USD")
     else:
         print("Nothing")
-    time.sleep(20)
+    time.sleep(6)
 
 
