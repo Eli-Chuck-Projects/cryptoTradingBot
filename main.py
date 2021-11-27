@@ -26,7 +26,7 @@ buy_amount = 0.2
 
 
 while True:
-    price = cb.price("BTC-USD")
+    price = cb.getPrice("BTC-USD")
     if price <= buy_price:
         print("Buying BTC")
         # auth_client.buy(size=buy_amount, order_type="marker", product_id="BTC_USD")
