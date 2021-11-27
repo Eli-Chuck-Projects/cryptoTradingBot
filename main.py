@@ -98,14 +98,42 @@ def tryToSell(percentageDiff):
 
     isNextOperationBuy = True
 
-
+points = []
+lastBuyPrice = -1
 def attemptToMakeTrade2(dt):
-    rates = auth_client.get_product_historic_rates("BTC-USD")
+    actionIsBuy = True
     currentPrice = cb.getPrice("BTC-USD")
-    print(rates)
-    print(currentPrice)
-    print("")
+    points.append(currentPrice)
 
+    if len(points) > 3:
+        points.pop(0)
+        prev1 = points[1]
+        prev2 = points[0]
+        s1 = float((currentPrice-prev1)/dt)
+        s0 = float((prev1-prev2)/dt)
+        if actionIsBuy:
+            if s0 < 0 and s1 >= 0:
+            #minimum. Buy now
+                try:
+                    auth_client.buy(size=.1, order_type="market", product_id="BTC-USD")
+                    print("BUYING")
+                    actionIsBuy = False
+                    #This can only happen when an order is verified.
+                    lastBuyPrice = currentPrice
+                except:
+                    print("TRIED to BUY")
+        else:
+            if s0 > 0 and s1 <= 0 and currentPrice > lastBuyPrice:
+            #maximum. Sell now
+                try:
+                    auth_client.sell(size=.1, order_type="market", product_id="BTC-USD")
+                    print("SELLING")
+                    actionIsBuy = True
+                    #This can only happen when a sale is verified.
+                except:
+                    print("TRIED to SELL")
+
+    print(points)
 
 
 while True:
